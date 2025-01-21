@@ -2,16 +2,16 @@
 -- Link to schema: https://app.quickdatabasediagrams.com/#/d/oY1fm5
 -- Used QuickDBD to create initial DB schema diagram.
 
-
---Drop Tables if they Exist 
-DROP TABLE IF EXISTS Departments;
-DROP TABLE IF EXISTS Dept_manager;
-DROP TABLE IF EXISTS Titles;
+----Drop Tables If they exists
 DROP TABLE IF EXISTS Dept_emp;
-DROP TABLE IF EXISTS Employees;
+DROP TABLE IF EXISTS Dept_manager;
 DROP TABLE IF EXISTS Salaries;
+DROP TABLE IF EXISTS Employees;
+DROP TABLE IF EXISTS Titles;
+DROP TABLE IF EXISTS Departments;
 
----Create Department table to store information
+----Create Tables
+
 CREATE TABLE Departments (
     dept_no varchar(60)   NOT NULL,
     dept_name varchar(60)   NOT NULL,
@@ -19,21 +19,17 @@ CREATE TABLE Departments (
         dept_no
      )
 );
+Select * from Departments;
 
-SELECT * FROM Departments
-
----Create Department Manager table to store Manager information
 CREATE TABLE Dept_manager (
     dept_no varchar(60)   NOT NULL,
     emp_no int   NOT NULL,
     CONSTRAINT pk_Dept_manager PRIMARY KEY (
-        emp_no
+        dept_no, emp_no
      )
 );
+Select * from Dept_manager;
 
-SELECT * FROM Dept_manager
-
----Create Title table to store Titles information of Employees
 CREATE TABLE Titles (
     title_id varchar(60)   NOT NULL,
     title varchar(60)   NOT NULL,
@@ -41,43 +37,59 @@ CREATE TABLE Titles (
         title_id
      )
 );
+Select * from Titles;
 
-SELECT * FROM Titles
-
----Create Department Employees table to store what Department employees work at.
 CREATE TABLE Dept_emp (
     emp_no int   NOT NULL,
     dept_no varchar   NOT NULL
+    CONSTRAINT pk_DEPT_EMP PRIMARY KEY (
+        emp_no, dept_no
+    )
 );
+Select * from Dept_emp;
 
-SELECT * FROM Dept_emp
-
----Create Employees table to store Employees info such as names, birth date, titles etc...
 CREATE TABLE Employees (
     emp_no int   NOT NULL,
     emp_title_id varchar(60)   NOT NULL,
     birth_date date   NOT NULL,
     first_name varchar(60)   NOT NULL,
     last_name varchar(60)   NOT NULL,
-    sex varchar   NOT NULL,
+    sex varchar(60)   NOT NULL,
     hire_date date   NOT NULL,
     CONSTRAINT pk_Employees PRIMARY KEY (
         emp_no
      )
 );
+Select * from Employees;
 
-SELECT * FROM Employees
-
----Create Employees Salary table to store Employees Salary information
 CREATE TABLE Salaries (
     emp_no int   NOT NULL,
     salary int   NOT NULL,
     CONSTRAINT pk_Salaries PRIMARY KEY (
-        emp_no
+        emp_no, salary
      )
 );
+Select * from Salaries;
 
-SELECT * FROM Salaries
+
+ALTER TABLE Employees ADD CONSTRAINT fk_Employees_emp_title_id FOREIGN KEY(emp_title_id)
+REFERENCES Titles (title_id);
+
+ALTER TABLE Salaries ADD CONSTRAINT fk_Salaries_emp_no FOREIGN KEY(emp_no)
+REFERENCES Employees (emp_no);
+
+ALTER TABLE Dept_manager ADD CONSTRAINT fk_Dept_manager_dept_no FOREIGN KEY(dept_no)
+REFERENCES Departments (dept_no);
+
+ALTER TABLE Dept_manager ADD CONSTRAINT fk_Dept_manager_emp_no FOREIGN KEY(emp_no)
+REFERENCES Employees (emp_no);
+
+ALTER TABLE Dept_emp ADD CONSTRAINT fk_Dept_emp_emp_no FOREIGN KEY(emp_no)
+REFERENCES Employees (emp_no);
+
+ALTER TABLE Dept_emp ADD CONSTRAINT fk_DEPT_emp_dept_no FOREIGN KEY(dept_no)
+REFERENCES Departments (dept_no);
+
 
 --1) List the employee number, last name, first name, sex, and salary of each employee.
 
